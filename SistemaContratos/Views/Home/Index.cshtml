@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<SistemaContratos.Models.Contrato>
+@{
     ViewData["Title"] = "Importação de Contratos";
 }
 
@@ -21,4 +22,44 @@
 
         </form>
     </div>
+</div>
+
+<div class="mt-5">
+    <h3 class="mb-3">Contratos Importados</h3>
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover border">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Contrato</th>
+                        <th>Produto</th>
+                        <th>Vencimento</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var contrato in Model)
+                    {
+                        <tr>
+                            <td>@contrato.NomeCliente</td>
+                            <td>@contrato.CPF</td>
+                            <td>@contrato.NumContrato</td>
+                            <td>@contrato.Produto</td>
+                            <td>@contrato.DataVencimento.ToShortDateString()</td>
+                            <td>@contrato.Valor.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center" role="alert">
+            Nenhum contrato importado ainda. Faça o upload do arquivo acima!
+        </div>
+    }
 </div>

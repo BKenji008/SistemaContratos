@@ -9,8 +9,14 @@ namespace SistemaContratos.Models
 
         public string NomeCliente {  get; set; }
 
-        public decimal Valor { get; set; }
+        public string CPF { get; set; }
 
-        public DateTime DataVencimento {  get; set; }
+        public string NumContrato { get; set; }
+
+        public string Produto { get; set; }
+
+        public DateTime DataVencimento { get; set; }
+
+        public decimal Valor { get; set; }
     }
 }

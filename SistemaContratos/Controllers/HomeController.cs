@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SistemaContratos.Data;
 using SistemaContratos.Models;
 using System.Diagnostics;
-using System.IO;
-using System;
+using System.Globalization;
 
 namespace SistemaContratos.Controllers
 {
@@ -17,22 +15,31 @@ namespace SistemaContratos.Controllers
             _banco = banco;
         }
 
+        // Pega a lista de contratos no banco de dados e envia para a tela
         public IActionResult Index()
         {
-            return View();
+            var listaDeContratos = _banco.Contratos.ToList();
+
+            return View(listaDeContratos);
         }
 
         // Recebe o arquivo, valida e realiza a importação
         [HttpPost]
         public IActionResult Importar(IFormFile arquivoContratos)
         {
+            // Para deixar acentos 
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             if (arquivoContratos == null || arquivoContratos.Length == 0)
             {
                 return RedirectToAction("Index");
             }
 
-            // Abre o arquivo .CSV recebido
-            using (var leitor = new StreamReader(arquivoContratos.OpenReadStream()))
+            // Limpa o banco de dados antes da importação
+            _banco.Contratos.RemoveRange(_banco.Contratos);
+            _banco.SaveChanges();
+
+            // Abre o arquivo .CSV recebido com acentos 
+            using (var leitor = new StreamReader(arquivoContratos.OpenReadStream(), System.Text.Encoding.GetEncoding("iso-8859-1")))
             {
                 // Pula o cabeçalho
                 leitor.ReadLine();
@@ -49,16 +56,32 @@ namespace SistemaContratos.Controllers
                     // Divide a linha onde tem ponto e vírgula
                     var colunas = linha.Split(';');
 
-                    // Cria o objeto Contrato com os dados da linha
-                    var contrato = new Contrato
+                    if (colunas.Length < 6)
                     {
-                        NomeCliente = colunas[0],
-                        Valor = Convert.ToDecimal(colunas[1]),
-                        DataVencimento = Convert.ToDateTime(colunas[2])
-                    };
+                        continue;
+                    }
 
-                    // Adiciona e depois salva no banco de dados
-                    _banco.Contratos.Add(contrato);
+                    try
+                    {
+                        // Define a cultura pra pb-br pra converter a data e o valor
+                        var cultura = new CultureInfo("pt-BR");
+
+                        // Cria o objeto Contrato com os dados da linha
+                        var contrato = new Contrato
+                        {
+                            NomeCliente = colunas[0].Trim(),
+                            CPF = colunas[1].Trim(),
+                            NumContrato = colunas[2].Trim(),
+                            Produto = colunas[3].Trim(),
+                            DataVencimento = Convert.ToDateTime(colunas[4].Trim(), cultura),
+                            Valor = Convert.ToDecimal(colunas[5].Trim(), cultura)
+                        };
+                        _banco.Contratos.Add(contrato);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
                 }
                 _banco.SaveChanges();
             }
