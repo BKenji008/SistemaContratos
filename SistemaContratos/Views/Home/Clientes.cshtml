@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SistemaContratos.Models.ResumoCliente>
+
+@{
+    ViewData["Title"] = "Relatório de Clientes";
+}
+
+<div class="mt-4">
+    <h2 class="mb-4">Consulta de dados por Cliente</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover shadow-sm border">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Valor Total</th>
+                        <th>Maior Atraso (Dias)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <td>@cliente.NomeCliente</td>
+                            <td class="text-danger">@cliente.ValorTotal.ToString("C")</td>
+                            <td>
+                                @if (cliente.MaiorAtrasoDias > 0)
+                                {
+                                    <span class="badge bg-danger">@cliente.MaiorAtrasoDias dias</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Em dia</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">Nenhum dado encontrado. Faça a importação primeiro!</div>
+    }
+</div>

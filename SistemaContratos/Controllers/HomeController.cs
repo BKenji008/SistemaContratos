@@ -15,12 +15,37 @@ namespace SistemaContratos.Controllers
             _banco = banco;
         }
 
-        // Pega a lista de contratos no banco de dados e envia para a tela
+        // Tela do formulario para importação 
         public IActionResult Index()
         {
-            var listaDeContratos = _banco.Contratos.ToList();
+            return View();
+        }
 
+        // Tela de consulta de contratos, pega os contratos e envia para a tela 
+        public IActionResult Contratos()
+        {
+            var listaDeContratos = _banco.Contratos.ToList();
             return View(listaDeContratos);
+        }
+
+        // Tela de consulta por cliente, calcula o valor total, o atraso em dias e envia para a tela
+        public IActionResult Clientes()
+        {
+            var listaDeContratos = _banco.Contratos.ToList();
+            var dataAtual = DateTime.Today;
+
+            var resumoClientes = listaDeContratos
+                .GroupBy(c => c.NomeCliente)
+                .Select(grupo => new ResumoCliente
+                {
+                    NomeCliente = grupo.Key,
+                    ValorTotal = grupo.Sum(c => c.Valor),
+                    MaiorAtrasoDias = grupo.Max(c => (dataAtual - c.DataVencimento).Days > 0 ? (dataAtual - c.DataVencimento).Days : 0)
+                })
+                .OrderByDescending(r => r.ValorTotal)
+                .ToList();
+
+            return View(resumoClientes);
         }
 
         // Recebe o arquivo, valida e realiza a importação
