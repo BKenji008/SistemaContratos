@@ -1,8 +1,24 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Importação de Contratos";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4">Nova Importação</h1>
+</div>
+
+<div class="card mt-4 mx-auto" style="max-width: 500px;">
+    <div class="card-body">
+        <form asp-controller="Home" asp-action="Importar" method="post" enctype="multipart/form-data">
+            
+            <div class="mb-3">
+                <label for="arquivoExcel" class="form-label">Selecione o arquivo com a carga de contratos. (Apenas arquivos .CSV)</label>
+                <input class="form-control" type="file" id="arquivoContratos" name="arquivoContratos" accept=".csv" required>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Importar Dados</button>
+            </div>
+
+        </form>
+    </div>
 </div>
