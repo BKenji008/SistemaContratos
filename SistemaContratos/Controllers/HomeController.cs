@@ -72,7 +72,7 @@ namespace SistemaContratos.Controllers
                 // Pula o cabeçalho
                 leitor.ReadLine();
 
-                // Lê linha por linha 
+                // Lê linha por linha
                 while (!leitor.EndOfStream)
                 {
                     var linha = leitor.ReadLine();

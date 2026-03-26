@@ -8,6 +8,14 @@ builder.Services.AddDbContext<SistemaContratos.Data.AppDbContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Autenticação por cookie, se alguem tenta acessar uma pagina não autenticado, retorna para o login. Tempo limite de 1 hora.
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", options =>
+    {
+        options.LoginPath = "/Home/Login";
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    });
+
 // Para arrumar o formato do dinheiro
 var supportedCultures = new[] { new System.Globalization.CultureInfo("pt-BR") };
 var localizationOptions = new RequestLocalizationOptions
@@ -32,6 +40,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

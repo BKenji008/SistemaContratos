@@ -9,5 +9,6 @@ namespace SistemaContratos.Data
         {
         }
         public DbSet<Contrato> Contratos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
