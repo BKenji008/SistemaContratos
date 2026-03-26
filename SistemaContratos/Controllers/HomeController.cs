@@ -56,12 +56,15 @@ namespace SistemaContratos.Controllers
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             if (arquivoContratos == null || arquivoContratos.Length == 0)
             {
+                TempData["Erro"] = "Nenhum arquivo selecionado.";
                 return RedirectToAction("Index");
             }
 
             // Limpa o banco de dados antes da importação
             _banco.Contratos.RemoveRange(_banco.Contratos);
             _banco.SaveChanges();
+
+            int linhasImportadas = 0;
 
             // Abre o arquivo .CSV recebido com acentos 
             using (var leitor = new StreamReader(arquivoContratos.OpenReadStream(), System.Text.Encoding.GetEncoding("iso-8859-1")))
@@ -102,6 +105,7 @@ namespace SistemaContratos.Controllers
                             Valor = Convert.ToDecimal(colunas[5].Trim(), cultura)
                         };
                         _banco.Contratos.Add(contrato);
+                        linhasImportadas++;
                     }
                     catch (Exception)
                     {
@@ -109,6 +113,14 @@ namespace SistemaContratos.Controllers
                     }
                 }
                 _banco.SaveChanges();
+            }
+            if (linhasImportadas > 0)
+            {
+                TempData["Sucesso"] = $"{linhasImportadas} contratos importados, consultas liberadas.";
+            }
+            else
+            {
+                TempData["Erro"] = "O arquivo está em formato inválido, está vazio ou não possui as colunas obrigatórias.";
             }
 
             return RedirectToAction("Index");
