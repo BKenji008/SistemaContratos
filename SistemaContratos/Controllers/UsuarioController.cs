@@ -42,9 +42,9 @@ namespace SistemaContratos.Controllers
                 new Claim(ClaimTypes.NameIdentifier, usuario.Login)
             };
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            await HttpContext.SignInAsync("CookieAuth", new ClaimsPrincipal(claimsIdentity));
 
             return RedirectToAction("Index", "Home");
         }
@@ -63,24 +63,23 @@ namespace SistemaContratos.Controllers
             {
                 if (_banco.Usuarios.Any(u => u.Login == usuario.Login))
                 {
-                    TempData["Erro"] = "Email já em uso, coloque outro ou faça login.";
+                    TempData["Erro"] = "Usuário já em uso, coloque outro ou faça login.";
                     return View(usuario);
                 }
 
                 _banco.Usuarios.Add(usuario);
                 _banco.SaveChanges();
 
-                TempData["Sucesso"] = "Cadastro realizado com sucesso.";
                 return RedirectToAction("Login");
             }
 
             return View(usuario);
         }
 
-        // É o 
+        // É o logout, tira o usuário do sistema
         public async Task<IActionResult> Sair()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync("CookieAuth");
             return RedirectToAction("Login");
         }
     }

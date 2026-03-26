@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="text-center mb-4">
+            <h2 class="text-dark fw-bold">Importador de Contratos</h2>
+            <p class="text-muted">Faça login para acessar o sistema</p>
+        </div>
+
+        <div class="card shadow bg-white border" style="border-radius: 10px;">
+            <div class="card-body p-4">
+                @if (TempData["Erro"] != null)
+                {
+                    <div class="alert alert-danger text-center shadow-sm">@TempData["Erro"]</div>
+                }
+                <form asp-controller="Usuario" asp-action="Login" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Usuário</label>
+                        <input type="text" name="login" class="form-control" placeholder="Digite seu nome de usuário" required autofocus />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Senha</label>
+                        <input type="password" name="senha" class="form-control" placeholder="Digite sua senha" required />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100 mb-3 shadow-sm">Entrar</button>
+                    
+                    <div class="text-center mt-3">
+                        <span class="text-muted">Ainda não tem conta?</span>
+                        <a asp-action="Cadastrar" class="text-decoration-none">Cadastre-se aqui</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

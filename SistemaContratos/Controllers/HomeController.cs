@@ -3,9 +3,11 @@ using SistemaContratos.Data;
 using SistemaContratos.Models;
 using System.Diagnostics;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SistemaContratos.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly AppDbContext _banco;

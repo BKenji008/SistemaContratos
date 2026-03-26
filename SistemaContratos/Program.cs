@@ -8,11 +8,11 @@ builder.Services.AddDbContext<SistemaContratos.Data.AppDbContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Autenticação por cookie, se alguem tenta acessar uma pagina não autenticado, retorna para o login. Tempo limite de 1 hora.
+// Autenticação por cookie, retorna para o login caso o usuario nao esteja autenticado. Tempo limite de 1 hora.
 builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth", options =>
     {
-        options.LoginPath = "/Home/Login";
+        options.LoginPath = "/Usuario/Login";
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
     });
 
